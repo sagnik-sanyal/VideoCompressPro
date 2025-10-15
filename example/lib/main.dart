@@ -48,8 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (file == null) {
       return;
     }
-    await VideoCompress.setLogLevel(0);
-    final info = await VideoCompress.compressVideo(
+    await VideoCompressPro.instance.setLogLevel(0);
+    final info = await VideoCompressPro.instance.compressVideo(
       file.path,
       quality: VideoQuality.MediumQuality,
       deleteOrigin: false,
@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   size: 55,
                 ),
                 onTap: () {
-                  VideoCompress.cancelCompression();
+                  VideoCompressPro.instance.cancelCompression();
                 }),
             ElevatedButton(
               onPressed: () {

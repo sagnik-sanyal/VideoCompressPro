@@ -97,12 +97,12 @@ class _IsolateVideoCompressExampleState
     try {
       // Subscribe to compression progress
       final subscription =
-          VideoCompress.compressProgress$.subscribe((progress) {
+          VideoCompressPro.instance.compressProgress$.subscribe((progress) {
         message.sendPort.send(IsolateProgress(progress: progress));
       });
 
       // Compress the video
-      final info = await VideoCompress.compressVideo(
+      final info = await VideoCompressPro.instance.compressVideo(
         message.videoPath,
         quality: VideoQuality.MediumQuality,
         deleteOrigin: false,

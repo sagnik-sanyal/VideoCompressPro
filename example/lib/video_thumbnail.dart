@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,7 +29,8 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
       }
 
       if (file != null) {
-        _thumbnailFile = await VideoCompress.getFileThumbnail(file.path);
+        _thumbnailFile =
+            await VideoCompressPro.instance.getFileThumbnail(file.path);
         setState(() {
           print(_thumbnailFile);
         });
