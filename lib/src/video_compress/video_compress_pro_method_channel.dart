@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 import '../media/media_info.dart';
+import 'isolate_helper.dart';
 import 'video_compress_pro_platform_interface.dart';
 import 'video_quality.dart';
 
@@ -14,15 +14,14 @@ class VideoCompressProMethodChannel extends VideoCompressProPlatformInterface {
 
   @override
   void setProgressCallback(Future<void> Function(MethodCall) callback) {
-    WidgetsFlutterBinding.ensureInitialized();
     _channel.setMethodCallHandler(callback);
   }
 
   @override
   Future<Uint8List?> getByteThumbnail(String path,
       {int quality = 100, int position = -1}) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    return await _channel.invokeMethod<Uint8List>('getByteThumbnail', {
+    return await IsolateHelper.executeMethodCall<Uint8List>(
+        'getByteThumbnail', {
       'path': path,
       'quality': quality,
       'position': position,
@@ -32,8 +31,8 @@ class VideoCompressProMethodChannel extends VideoCompressProPlatformInterface {
   @override
   Future<File> getFileThumbnail(String path,
       {int quality = 100, int position = -1}) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    final filePath = await _channel.invokeMethod<String>('getFileThumbnail', {
+    final filePath =
+        await IsolateHelper.executeMethodCall<String>('getFileThumbnail', {
       'path': path,
       'quality': quality,
       'position': position,
@@ -43,9 +42,8 @@ class VideoCompressProMethodChannel extends VideoCompressProPlatformInterface {
 
   @override
   Future<MediaInfo> getMediaInfo(String path) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    final jsonStr =
-        await _channel.invokeMethod<String>('getMediaInfo', {'path': path});
+    final jsonStr = await IsolateHelper.executeMethodCall<String>(
+        'getMediaInfo', {'path': path});
     final jsonMap = json.decode(jsonStr!);
     return MediaInfo.fromJson(jsonMap);
   }
@@ -60,8 +58,8 @@ class VideoCompressProMethodChannel extends VideoCompressProPlatformInterface {
     bool? includeAudio,
     int frameRate = 30,
   }) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    final jsonStr = await _channel.invokeMethod<String>('compressVideo', {
+    final jsonStr =
+        await IsolateHelper.executeMethodCall<String>('compressVideo', {
       'path': path,
       'quality': quality.index,
       'deleteOrigin': deleteOrigin,
@@ -80,20 +78,17 @@ class VideoCompressProMethodChannel extends VideoCompressProPlatformInterface {
 
   @override
   Future<void> cancelCompression() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await _channel.invokeMethod<void>('cancelCompression');
+    await IsolateHelper.executeMethodCall<void>('cancelCompression', {});
   }
 
   @override
   Future<bool?> deleteAllCache() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    return await _channel.invokeMethod<bool>('deleteAllCache');
+    return await IsolateHelper.executeMethodCall<bool>('deleteAllCache', {});
   }
 
   @override
   Future<void> setLogLevel(int logLevel) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await _channel.invokeMethod<void>('setLogLevel', {
+    await IsolateHelper.executeMethodCall<void>('setLogLevel', {
       'logLevel': logLevel,
     });
   }

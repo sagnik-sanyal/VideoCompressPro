@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:video_compress/video_compress.dart';
 
+import 'isolate_helper.dart';
 import 'video_compress_pro_platform_interface.dart';
 
 class VideoCompressPro {
@@ -11,6 +12,9 @@ class VideoCompressPro {
   bool _isCompressing = false;
 
   VideoCompressPro._() {
+    // Initialize isolate helper for cross-isolate communication
+    IsolateHelper.initializeRootIsolate();
+
     try {
       VideoCompressProPlatformInterface.instance.setProgressCallback(
         _progressCallback,
@@ -28,6 +32,7 @@ class VideoCompressPro {
   }
 
   void dispose() {
+    IsolateHelper.dispose();
     _instance = null;
   }
 
