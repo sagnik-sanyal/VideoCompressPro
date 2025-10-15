@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:video_compress/src/progress_callback/compress_mixin.dart';
 import 'package:video_compress/video_compress.dart';
 
@@ -37,11 +37,19 @@ extension Compress on IVideoCompress {
   Future<T?> _invoke<T>(String name, [Map<String, dynamic>? params]) async {
     T? result;
     try {
+      // Ensure bindings are initialized for each platform call
+      // This is especially important when called from isolates
+      WidgetsFlutterBinding.ensureInitialized();
+
       result = params != null
           ? await channel.invokeMethod(name, params)
           : await channel.invokeMethod(name);
     } on PlatformException catch (e) {
       debugPrint('''Error from VideoCompress: 
+      Method: $name
+      $e''');
+    } catch (e) {
+      debugPrint('''Error from VideoCompress (Isolate/Binding): 
       Method: $name
       $e''');
     }
